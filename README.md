@@ -1,8 +1,6 @@
 # balance-game
 
-<div id="rulesModal" class="modal">
-<div class="modal-content">
-<span class="close-btn" onclick="closeRules()">&times;</span>
+
 <p>Grid-cells are numbered naturally, from top-left to bottom right and</p>
 <ul>
 <li>Player-1 and player-2 click cells/numbers alternately</li>
@@ -26,4 +24,3 @@ the number of clicks in [1,n] that any player has achieved since the last click 
 <p>Player 1 wins when player 2 violates one of the restrictions above</p>
 <p>Player 2 wins if he has not lost by the time player-1 has picked all cells.</p>
 <p>Press <strong>Auto1</strong> to play as player-2 against a random-picking player-1.</p>
-</div></div>
