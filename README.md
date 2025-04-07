@@ -10,8 +10,9 @@
 
 <p>Player-2 is to keep his choices evenly distributed relative to those of player 1.</p>
 
-<p>This is measured by the <strong>score</strong> at each cell n: 
-the number of clicks in [1,n] that any player has achieved since the last click in [1,n] by the other player.</p>
+<p>This is measured by the <strong>score</strong> at each cell n:</p> 
+
+<p>the number of clicks in [1,n] that any player has achieved since the last click in [1,n] by the other player.</p>
 
 <p><strong>Rules</strong></p>
 <ul>
