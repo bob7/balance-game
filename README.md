@@ -14,6 +14,8 @@
 
 <p>the number of clicks in [1,n] that any player has achieved since the last click in [1,n] by the other player.</p>
 
+![](./balance.png)
+
 <p><strong>Rules</strong></p>
 <ul>
 <li>Player-2 needs to keep the score of each cell below 5</li>
