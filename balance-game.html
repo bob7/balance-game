@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balance Game</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+/*    font-size: 11pt;*/
+/*font-size: clamp(0.5rem, 0.0313rem + 1.5vw, 0.875rem);*/
+    background-color: #888;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+.grid {
+    display: grid;
+    margin: 20px auto 20px auto; /* Added margin-bottom for space */
+    max-width: 90vw; /* Maximum 90% of viewport width */
+    max-height: 90vh; /* Maximum 90% of viewport height */
+    aspect-ratio: 1 / 1; /* Ensure square grid */
+    justify-content: center;
+}
+
+.cell {
+    background: white;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(10px, 2vw, 15px); 
+    position: relative;
+}
+
+.player1::before {
+    content: '';
+    opacity: 0.3;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: gray;
+    z-index: 1;
+}
+
+.player2::after {
+    content: '';
+    opacity: 0.3;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: green;
+    z-index: 1;
+}
+
+.score {
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+    transition: color 0.3s;
+}
+
+#auto1 {
+/*    margin-left: 12px;*/
+/*    margin-right: 8px;*/
+/*    background-color: #eee;
+    padding: 3px 8px;
+    cursor: pointer;
+    border: 1px solid #666;
+    border-radius: 5px;
+    font-size: clamp(5px, 2vw, 12px);
+*/}
+
+#auto1.active {
+    background-color: #555;
+    color: white;
+    border: 1px solid #bbb;
+}
+
+.controls {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.controls div {
+  background-color: #333;
+  color:#eee;
+  border: 0px solid black;
+  padding: 10px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+
+.size-button {
+    margin-top: 2px;
+    padding: 2px 8px;
+    background-color: #eee;
+    margin-left: 5px;
+    font-size: clamp(12px, 2vw, 14px);
+    cursor: pointer;
+    border: 1px solid #666;
+    border-radius: 5px;
+}
+
+.toggle-button {	
+    padding: 3px 8px;
+    border: 1px solid #666;
+    font-size: clamp(5px, 2vw, 12px);
+    border-radius: 5px;
+    background-color: #eee;
+    color: #000;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.toggle-button.active {
+/*    background-color: #4CAF50;
+    color: white;
+*/
+    background-color: #555;
+    color: white;
+    border: 1px solid #bbb;
+}
+
+.toggle-button:hover {
+/*    background-color: #4CAF50;
+    color: white;
+*/
+    background-color: #666;
+    color: white;
+}
+
+.mode-button {
+    border: 1px solid #888;
+    border-radius: 5px;
+    background-color: #eee;
+    color: #000;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.mode-button.active {
+    background-color: #2196F3;
+    color: white;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 3;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #eee;
+    margin: auto;
+    color: #444;
+    text-align: left;
+/*    font-size: 11pt;*/
+/*    font-size: clamp(5px, 2vw, 11px);*/
+/* font-size: clamp(0.5rem, 0.2656rem + 0.75vw, 0.6875rem);*/
+	font-size: clamp(0.5rem, 0.0313rem + 1.5vw, 0.875rem);
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 650px;
+    border-radius: 10px;
+    line-height: 1.4;
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+h2 {
+    color: #444;
+    text-align: center;
+}
+
+ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+ul li {
+    line-height: 1.6;
+}
+
+strong {
+    color: #444;
+}
+</style>
+</head>
+
+<body>
+	
+<div class="controls">
+    <button id="increaseSize" class="toggle-button">+</button>
+    <button id="decreaseSize" class="toggle-button">-</button>
+    <button id="auto1" class="toggle-button">Auto1</button>
+    <button class="toggle-button" onclick="showRules()">Rules</button>
+</div>
+
+<div id="rulesModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeRules()">×</span>
+        <p>Grid-cells are numbered naturally, from top-left to bottom right and</p>
+        <ul>
+            <li>Player-1 and player-2 click cells/numbers alternately</li>
+            <li>cells clicked by player-1 are indicated by a gray top-half fill</li>
+            <li>cells clicked by player-2 are indicated by a green bottom-half fill</li>
+        </ul>
+        <p>Player-2 is to keep his choices evenly distributed relative to those of player 1.</p>
+        <p>This is measured by the <strong>score</strong> at each cell n: 
+        the number of clicks in [1,n] that any player has achieved since the last click in [1,n] by the other player.</p>
+        <p><strong>Rules</strong></p>
+        <ul>
+            <li>Player-2 needs to keep the score of each cell below 5</li>
+            <li>No player can pick any number he has previously picked</li>
+            <li>Player-2 cannot click a number which is adjacent to one he has previously clicked.</li>
+            <li>Player-2 may pass his turn by clicking outside the grid.</li>
+        </ul>
+        <p>Player 1 wins when player 2 violates one of the restrictions above</p>
+        <p>Player 2 wins if he has not lost by the time player-1 has picked all cells.</p>
+        <p>Press <strong>Auto1</strong> to play as player-2 against a random-picking player-1.</p>
+    </div>
+</div>
+
+<div class="grid" id="gameGrid"></div>
+
+<script>
+const grid = document.getElementById('gameGrid');
+const auto1Button = document.getElementById('auto1');
+const increaseSizeButton = document.getElementById('increaseSize');
+const decreaseSizeButton = document.getElementById('decreaseSize');
+let player1Moves;
+let player2Moves;
+let currentPlayer;
+let scores;
+let score2s;
+let isAuto1Active = false;
+let gridSize = 9;
+let gameOver = false;
+
+function showRules() {
+    const modal = document.getElementById('rulesModal');
+    modal.style.display = "block";
+}
+
+function closeRules() {
+    const modal = document.getElementById('rulesModal');
+    modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('rulesModal');
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+}
+
+function initializeGame() {
+    player1Moves = new Set();
+    player2Moves = new Set();
+    scores = new Array(gridSize * gridSize).fill(0);
+    score2s = new Array(gridSize * gridSize).fill(0);
+    currentPlayer = 1;
+    createGrid(gridSize);
+}
+
+function createGrid(size) {
+    grid.innerHTML = '';
+    // Calculate cell size based on viewport
+    const viewportWidth = Math.min(window.innerWidth * 0.9, 660); // Max 90% of viewport width or 660px
+    const viewportHeight = Math.min(window.innerHeight * 0.9, 660); // Max 90% of viewport height or 660px
+    const cellSize = Math.min(viewportWidth, viewportHeight) / size; // Ensure square cells
+
+    // Set grid dimensions
+    grid.style.width = `${cellSize * size}px`;
+    grid.style.height = `${cellSize * size}px`;
+    grid.style.gridTemplateColumns = `repeat(${size}, ${cellSize}px)`;
+    grid.style.gridTemplateRows = `repeat(${size}, ${cellSize}px)`;
+
+    for (let i = 1; i <= size * size; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.number = i;
+
+        const scoreSpan = document.createElement('span');
+        scoreSpan.className = 'score';
+        scoreSpan.textContent = '0';
+
+        cell.appendChild(scoreSpan);
+        cell.addEventListener('click', handleClick);
+        grid.appendChild(cell);
+    }
+}
+
+function updateScores(clickedNum, player) {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+        const n = parseInt(cell.dataset.number);
+        if (player === 1) {
+            if (n >= clickedNum) {
+                score2s[n - 1] = 0;
+                scores[n - 1] += 1;
+            }
+        } else {
+            if (n >= clickedNum) {
+                score2s[n - 1] += 1;
+                scores[n - 1] = 0;
+            }
+        }
+
+        const globalScore = Math.max(scores[n - 1], score2s[n - 1]);
+        const scoreDisplay = cell.querySelector('.score');
+        if (globalScore === 5 && !gameOver) {
+            alert("Player-2 lost");
+            gameOver = true;
+        }
+
+        scoreDisplay.textContent = globalScore;
+        scoreDisplay.style.color = (globalScore === score2s[n - 1]) ? 'green' : 'black';
+    });
+    if (player === 1 && player1Moves.size === gridSize * gridSize) {
+        const allScoresLessThanFive = scores.every(score => score < 5);
+        if (allScoresLessThanFive) {
+            alert("Player 1 lost");
+            gameOver = true;
+        }
+    }
+}
+
+function canClickPlayer2(num) {
+    return !player2Moves.has(num) && !player2Moves.has(num - 1) && !player2Moves.has(num + 1);
+}
+
+function getRandomValidNumberForPlayer1() {
+    const validNumbers = [];
+    for (let i = 1; i <= gridSize * gridSize; i++) {
+        if (!player1Moves.has(i)) {
+            validNumbers.push(i);
+        }
+    }
+    if (validNumbers.length === 0) return null;
+    return validNumbers[Math.floor(Math.random() * validNumbers.length)];
+}
+
+function handleClick(e) {
+    if (e.target.classList.contains('score') || gameOver) return;
+
+    const cell = e.target.closest('.cell');
+    const num = parseInt(cell.dataset.number);
+
+    if (currentPlayer === 1) {
+        if (!player1Moves.has(num)) {
+            player1Moves.add(num);
+            cell.classList.add('player1');
+            updateScores(num, 1);
+            currentPlayer = 2;
+        }
+    } else {
+        if (canClickPlayer2(num)) {
+            player2Moves.add(num);
+            cell.classList.add('player2');
+            updateScores(num, 2);
+            currentPlayer = 1;
+            if (isAuto1Active) {
+                setTimeout(automatePlayer1, 500);
+            }
+        }
+    }
+}
+
+function automatePlayer1() {
+    if (!isAuto1Active || currentPlayer !== 1) return;
+
+    const randomNum = getRandomValidNumberForPlayer1();
+    if (randomNum !== null) {
+        const cell = document.querySelector(`.cell[data-number='${randomNum}']`);
+        handleClick({ target: cell });
+    } else {
+        currentPlayer = 2;
+    }
+}
+
+auto1Button.addEventListener('click', () => {
+    isAuto1Active = !isAuto1Active;
+    auto1Button.classList.toggle('active', isAuto1Active);
+    auto1Button.textContent = isAuto1Active ? "Auto1" : "Auto1";
+    setTimeout(automatePlayer1, 500);
+});
+
+increaseSizeButton.addEventListener('click', () => {
+    if (gridSize < 12) {
+        gridSize++;
+        initializeGame();
+    }
+});
+
+decreaseSizeButton.addEventListener('click', () => {
+    if (gridSize > 3) {
+        gridSize--;
+        initializeGame();
+    }
+});
+
+document.addEventListener('click', function(e) {
+    if (currentPlayer === 2 && !grid.contains(e.target)) {
+        currentPlayer = 1;
+        if (isAuto1Active) {
+            automatePlayer1();
+        }
+    }
+});
+
+// Handle window resize to adjust grid
+window.addEventListener('resize', () => {
+    createGrid(gridSize);
+});
+
+initializeGame();
+</script>
+</body>
+</html>
