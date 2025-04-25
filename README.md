@@ -14,7 +14,7 @@
 
 <p>the number of clicks in [1,n] that any player has achieved since the last click in [1,n] by the other player.</p>
 
-![](./balance.png)
+![](./balance-img.png)
 
 <p><strong>Rules</strong></p>
 <ul>
