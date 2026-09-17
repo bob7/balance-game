@@ -1,10 +1,21 @@
 # Balance Game
 
-Open `clearGame.html` in a modern browser to play. The board uses zero-based indices: 0 at the top-left, 1 in the next cell to the right, continuing across rows from top to bottom. Players take turns selecting cells: player 1 receives a red top-half marker and player 2 receives a green bottom-half marker.
+Open `clearGame.html` in a modern browser to play. The board uses zero-based indices: 0 at the top-left, 1 in the next cell to the right, continuing across rows from top to bottom. Players take turns selecting cells: player 1 receives a red top-half marker and player 2 receives a green bottom-half marker. Cleared enumerations use dimmer fills. 
 
-Cleared enumerations use dimmer fills. Each stage consists of a player-1 pick followed by a player-2 pick or pass. A red pick clears earlier green picks at equal or higher numbers. A green pick clears red picks at equal or higher numbers, including the current stage’s red pick. Passing clears nothing. Dimming persists through resizing and is included in static and animated exports.
+- Each stage consists of a player-1 pick followed by a player-2 pick or pass. 
+- A red pick clears earlier green picks at equal or higher numbers. 
+- A green pick clears red picks at equal or higher numbers, including the current stage’s red pick. 
+- Passing clears nothing. 
 
-At the end of each stage (after player 2 picks or passes), player 2 loses if the number of uncleared red cells or the number of uncleared green cells exceeds Load. The two colors are counted separately; exactly Load is allowed. Player 2 wins by surviving the end of the final stage, including his response to player 1’s final pick. Player 2 clicks either member of a zero-based pair (0, 1), (2, 3), … to pick both cells. Both get green fills, and clearing either clears both. Each cell counts toward Load. Neither member of a new pair may already be green or be adjacent to a previously picked green cell. On boards with an odd number of cells, the last cell is picked alone.
+Dimming persists through resizing and is included in static and animated exports.
+
+At the end of each stage (after player 2 picks or passes):
+
+- Player 2 loses if the number of uncleared red cells or the number of uncleared green cells exceeds Load. 
+- The two colors are counted separately; exactly Load is allowed. 
+- Player 2 wins by surviving the end of the final stage, including his response to player 1’s final pick. 
+
+Player 2 clicks either member of a zero-based pair (0, 1), (2, 3), … to pick both cells. Both get green fills, and clearing either clears both. Each cell counts toward Load. Neither member of a new pair may already be green or be adjacent to a previously picked green cell. On boards with an odd number of cells, the last cell is picked alone.
 
 <p margin-top="400px" align="center"><img width="600"  src="./balance-loop.gif"></p>
 
