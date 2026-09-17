@@ -6,7 +6,7 @@ Cleared enumerations use dimmer fills. Each stage consists of a player-1 pick fo
 
 At the end of each stage (after player 2 picks or passes), player 2 loses if the number of uncleared red cells or the number of uncleared green cells exceeds Load. The two colors are counted separately; exactly Load is allowed. Player 2 wins by surviving the end of the final stage, including his response to player 1’s final pick. Player 2 clicks either member of a zero-based pair (0, 1), (2, 3), … to pick both cells. Both get green fills, and clearing either clears both. Each cell counts toward Load. Neither member of a new pair may already be green or be adjacent to a previously picked green cell. On boards with an odd number of cells, the last cell is picked alone.
 
-![](./balance-loop.gif)
+<p margin-top="400px" align="center"><img width="600"  src="./balance-loop.gif"></p>
 
 ## Buttons
 
